@@ -28,7 +28,12 @@ public class ViewAllItems { // Items on cart(order)
 public class CheckPaymentInfo { //Check if the user has payment info saved
     public string UseSavedPaymentInfo; //User has as credit card saved for payment
     public string InvalidPaymentInfo; //Invalid payment info message
-    public class AddNewPayment; //Add new payment info prompt
+    
+}
+
+public class AddNewPayment { //Add new payment info prompt
+    
+
 }
 
 public class IsOrderEmpty { //Check if order is empty
