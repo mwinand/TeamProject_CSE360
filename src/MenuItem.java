@@ -3,7 +3,7 @@ import java.util.ArrayList;
 enum Category {
     Appetizer,
     Main,
-    Desert,
+    Dessert,
 }
 
 public class MenuItem {
@@ -13,6 +13,25 @@ public class MenuItem {
     private ArrayList<String> ingredientList; //List of Ingredients in an item
     private double timeToCook; //Time to cook item on the menu
     private Category category;
+
+    public MenuItem
+	(String food, double price, String imagePath, String[] ingredientList,
+	 double timeToCook, String category) {
+	this.food = food;
+	this.price = price;
+	this.imagePath = imagePath;
+	this.ingredientList = new ArrayList<String>();
+	for(String ing : ingredientList) {
+	    this.ingredientList.add(ing);
+	}
+	this.timeToCook = timeToCook;
+	if(category.equals("Appetizer"))
+	    this.category = Category.Appetizer;
+	else if(category.equals("Dessert"))
+	    this.category = Category.Dessert;
+	else
+	    this.category = Category.Main;
+    }
 
     public void addIngredient(String ing) { //Ingredients to add
         if (!(ingredientList.contains(ing))) ingredientList.add(ing);
@@ -26,8 +45,10 @@ public class MenuItem {
         }
         return removed;
     }
-    public ArrayList<String> getIngredientList() {
-        return ingredientList;
+    public String[] getIngredientList() {
+	String[] arr = new String[ingredientList.size()];
+        arr = ingredientList.toArray(arr);
+	return arr;
     }
     public String getFood() {
         return food;
