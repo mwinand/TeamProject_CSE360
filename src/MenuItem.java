@@ -46,9 +46,9 @@ public class MenuItem {
         return removed;
     }
     public String[] getIngredientList() {
-	String[] arr = new String[ingredientList.size()];
+	    String[] arr = new String[ingredientList.size()];
         arr = ingredientList.toArray(arr);
-	return arr;
+	    return arr;
     }
     public String getFood() {
         return food;
