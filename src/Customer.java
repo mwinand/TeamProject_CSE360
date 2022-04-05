@@ -29,7 +29,7 @@ public class Customer {
     public void moveUpInLine() {
         positionInLine--;
     }
-    public void cancelOrder() {
+    public void clearOrder() {
         order.clear();
         positionInLine = -1;
     }

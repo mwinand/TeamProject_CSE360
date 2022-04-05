@@ -51,8 +51,10 @@ public class Main extends Application {
 	Stage window = primaryStage;
 	Scene mainScene, searchScene, orderScene, paymentScene;
 	Button searchButton, toMainFromSearchButton,
-	    orderButton, toMainFromOrderButton, checkoutButton;
-	Label title, status;
+	    orderButton, toMainFromOrderButton, checkoutButton, payButton;
+	Label title, status, paymentStatus;
+	TextField paymentInfo, nameField, securityField, monthField, yearField;
+	Label creditCardLabel, nameLabel, securityLabel, expirationLabel;
 
 	Restaurant restaurant = new Restaurant("RestaurantName", "username", "password");
 	Customer customer = new Customer();
@@ -214,6 +216,7 @@ public class Main extends Application {
 	searchLayout.setMargin(table, new Insets(0, 40, 0, 40));
 
 	// Order Scene
+
 	orderScrollPane.setContent(orderList);
 	orderScrollPane.setFitToHeight(true);
 	orderScrollPane.setFitToWidth(true);
@@ -238,6 +241,90 @@ public class Main extends Application {
 	orderBottomLayout.setMargin(orderButtonRow, new Insets(0, 0, 20, 0));
 	orderLayout.setBottom(orderBottomLayout);
 	orderLayout.setMargin(orderBottomLayout, new Insets(20));
+
+	// Payment Scene
+
+	paymentStatus = new Label("");
+	payButton = new Button("Finish Order");
+	GridPane paymentGrid = new GridPane();
+	creditCardLabel = new Label("Credit card number:");
+	nameLabel = new Label("Name on card:");
+	securityLabel = new Label("Security number:");
+	expirationLabel = new Label("Expiration Date:");
+	paymentInfo = new TextField();
+	nameField = new TextField();
+	securityField = new TextField();
+	monthField = new TextField();
+	yearField = new TextField();
+	paymentInfo.textProperty().addListener((observable, oldValue, newValue) -> {
+		if(!newValue.matches("\\d*")) {
+		    paymentInfo.setText(newValue.replaceAll("[^\\d]", ""));
+		}
+		if(paymentInfo.getText().length() > 16) {
+		    String s = paymentInfo.getText().substring(0, 16);
+		    paymentInfo.setText(s);
+		}
+	    });
+	securityField.textProperty().addListener((observable, oldValue, newValue) -> {
+		if(!newValue.matches("\\d*")) {
+		    securityField.setText(newValue.replaceAll("[^\\d]", ""));
+		}
+		if(securityField.getText().length() > 3) {
+		    String s = securityField.getText().substring(0, 3);
+		    securityField.setText(s);
+		}
+	    });
+	monthField.textProperty().addListener((observable, oldValue, newValue) -> {
+		if(!newValue.matches("\\d*")) {
+		    monthField.setText(newValue.replaceAll("[^\\d]", ""));
+		}
+		if(monthField.getText().length() > 2) {
+		    String s = monthField.getText().substring(0, 2);
+		    monthField.setText(s);
+		}
+	    });
+	yearField.textProperty().addListener((observable, oldValue, newValue) -> {
+		if(!newValue.matches("\\d*")) {
+		    yearField.setText(newValue.replaceAll("[^\\d]", ""));
+		}
+		if(yearField.getText().length() > 4) {
+		    String s = yearField.getText().substring(0, 4);
+		    yearField.setText(s);
+		}
+	    });
+	payButton.setOnAction(e -> {
+		if(paymentInfo.getText().length() == 16
+		   && nameField.getText().length() != 0
+		   && securityField.getText().length() == 3
+		   && monthField.getText().length() == 2
+		   && yearField.getText().length() == 4) {
+		    paymentStatus.setText("");
+		    paymentInfo.setText("");
+		    nameField.setText("");
+		    securityField.setText("");
+		    monthField.setText("");
+		    yearField.setText("");
+		    status.setText("Order successful!");
+		    customer.clearOrder();
+		    window.setScene(mainScene);
+		}
+		else
+		    paymentStatus.setText("Payment fields not filled out correctly.");
+	    });
+	HBox expirationRow = new HBox(10);
+	expirationRow.getChildren().addAll(monthField, yearField);
+	GridPane.setConstraints(creditCardLabel, 0, 0);
+	GridPane.setConstraints(paymentInfo, 1, 0);
+	GridPane.setConstraints(nameLabel, 0, 1);
+	GridPane.setConstraints(nameField, 1, 1);
+	GridPane.setConstraints(securityLabel, 0, 2);
+	GridPane.setConstraints(securityField, 1, 2);
+	GridPane.setConstraints(expirationLabel, 0, 3);
+	GridPane.setConstraints(expirationRow, 1, 3);
+	paymentGrid.getChildren().addAll(creditCardLabel, paymentInfo, nameLabel, nameField, securityLabel, securityField, expirationLabel, expirationRow);
+	paymentLayout.getChildren().addAll(paymentStatus, paymentGrid, payButton);
+	paymentGrid.setAlignment(Pos.CENTER);
+	paymentLayout.setAlignment(Pos.CENTER);
 
 	// Finishing Window Settings
 	window.setScene(mainScene);
