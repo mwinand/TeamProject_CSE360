@@ -225,7 +225,12 @@ public class Main extends Application {
 	toMainFromOrderButton = new Button("Return to Menu");
 	toMainFromOrderButton.setOnAction(e -> window.setScene(mainScene));
 	checkoutButton = new Button("Checkout");
-	checkoutButton.setOnAction(e -> window.setScene(paymentScene));
+	checkoutButton.setOnAction(e -> {
+		if(customer.getOrderItems().length != 0)
+		    window.setScene(paymentScene);
+		else
+		    total.setText("Cannot checkout, cart is empty.");
+	    });
 	orderButtonRow.getChildren().addAll(toMainFromOrderButton, checkoutButton);
 	VBox orderBottomLayout = new VBox(20);
 	orderBottomLayout.setAlignment(Pos.CENTER);
