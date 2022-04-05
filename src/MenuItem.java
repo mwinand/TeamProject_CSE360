@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 enum Category {
     Appetizer,
@@ -13,6 +15,8 @@ public class MenuItem {
     private ArrayList<String> ingredientList; //List of Ingredients in an item
     private double timeToCook; //Time to cook item on the menu
     private Category category;
+    private Image image;
+    private ImageView imageView;
 
     public MenuItem
 	(String food, double price, String imagePath, String[] ingredientList,
@@ -31,6 +35,11 @@ public class MenuItem {
 	    this.category = Category.Dessert;
 	else
 	    this.category = Category.Main;
+
+	this.image = new Image(getClass().getResourceAsStream(imagePath));
+	this.imageView = new ImageView(this.image);
+	this.imageView.setFitWidth(100);
+	this.imageView.setPreserveRatio(true);
     }
 
     public void addIngredient(String ing) { //Ingredients to add
@@ -68,6 +77,9 @@ public class MenuItem {
     public String printCategory() {
         return getCategory().name();
     }
+    public ImageView getImageView() {
+	return imageView;
+    }
     public void setFood(String newFood, String category) {
         food = newFood;
         this.category = Category.valueOf(category);
@@ -75,8 +87,12 @@ public class MenuItem {
     public void setPrice(double newPrice) {
         price = newPrice;
     }
-    public void setImagePath(String path) {
-        imagePath = path;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+	this.image = new Image(getClass().getResourceAsStream(imagePath));
+	this.imageView = new ImageView(this.image);
+	this.imageView.setFitWidth(100);
+	this.imageView.setPreserveRatio(true);
     }
     public void setTimeToCook(double newTime) {
         timeToCook = newTime;

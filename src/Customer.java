@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
-public class UserCustomer extends User {
+public class Customer {
     private ArrayList<MenuItem> order;
     private int positionInLine;
     private long paymentInfo;
 
-    public UserCustomer() {
+    public Customer() {
         order = new ArrayList<MenuItem>();
         positionInLine = -1;
         paymentInfo = -1;
@@ -47,7 +47,7 @@ public class UserCustomer extends User {
     public MenuItem[] getOrderItems() {
         MenuItem[] arr = new MenuItem[order.size()];
         arr = order.toArray(arr);
-	    return arr;
+	return arr;
     }
     public double getOrderTotal() {
         double totalPrice = 0;

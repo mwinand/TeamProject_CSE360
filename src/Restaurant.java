@@ -1,10 +1,19 @@
 import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-public class UserRestaurant extends User {
+public class Restaurant {
+    private String name;
     private String username;
     private String password;
-    private ArrayList<MenuItem> menu;
+    private ObservableList<MenuItem> menu;
 
+    public Restaurant(String name, String username, String password) {
+	this.name = name;
+	this.username = username;
+	this.password = password;
+	this.menu = FXCollections.observableArrayList();
+    }
     public void setUsername(String newUsername) {
         username = newUsername;
     }
@@ -14,19 +23,19 @@ public class UserRestaurant extends User {
     public String getUsername() {
         return username;
     }
-    private String getPassword() {
-        return password;
+    public String getName() {
+	return name;
     }
     public Boolean checkLoginCredentials(String usernameEntry, String passwordEntry) {
         Boolean matchingUsername = usernameEntry.equalsIgnoreCase(getUsername());
-        Boolean correctPassword = passwordEntry.equals(getPassword());
+        Boolean correctPassword = passwordEntry.equals(password);
 
         return (matchingUsername && correctPassword);
     }
-    public void addItemToMenu(MenuItem item) {
+    public void addToMenu(MenuItem item) {
         if (!(menu.contains(item))) menu.add(item);
     }
-    public Boolean removeItemFromMenu(MenuItem item) {
+    public Boolean removeFromMenu(MenuItem item) {
         int loc;
         Boolean removed = false;
         loc = menu.indexOf(item);
@@ -34,5 +43,8 @@ public class UserRestaurant extends User {
             if (menu.remove(loc) == item) removed = true;
         }
         return removed;
+    }
+    public ObservableList<MenuItem> getMenu() {
+	return menu;
     }
 }
