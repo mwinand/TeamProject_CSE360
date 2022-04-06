@@ -28,7 +28,8 @@ import javafx.beans.property.SimpleStringProperty;
 public class Main extends Application {
 
     ScrollPane orderScrollPane = new ScrollPane();
-    Label total = new Label("$");
+    Label totalCost = new Label("$");
+    Label timeToCook = new Label("");
 
     public static void main(String[] args) {
 	launch(args);
@@ -229,12 +230,12 @@ public class Main extends Application {
 		if(customer.getOrderItems().length != 0)
 		    window.setScene(paymentScene);
 		else
-		    total.setText("Cannot checkout, cart is empty.");
+		    totalCost.setText("Cannot checkout, cart is empty.");
 	    });
 	orderButtonRow.getChildren().addAll(toMainFromOrderButton, checkoutButton);
 	VBox orderBottomLayout = new VBox(20);
 	orderBottomLayout.setAlignment(Pos.CENTER);
-	orderBottomLayout.getChildren().addAll(total, orderButtonRow);
+	orderBottomLayout.getChildren().addAll(totalCost, timeToCook, orderButtonRow);
 	orderBottomLayout.setMargin(orderButtonRow, new Insets(0, 0, 20, 0));
 	orderLayout.setBottom(orderBottomLayout);
 	orderLayout.setMargin(orderBottomLayout, new Insets(20));
@@ -374,7 +375,8 @@ public class Main extends Application {
 		.addAll(itemInfo, buttonContainer, itemPrice);
 	    orderList.getChildren().add(row);
 	}
-	total.setText("Total: $" + String.format("%.2f", customer.getOrderTotal()));
+	totalCost.setText("Total: $" + String.format("%.2f", customer.getOrderTotal()));
+	timeToCook.setText("Expected Time to Cook: " + String.format("%.0f", customer.getOrderTimeToCook()) + " minutes.");
 	return orderList;
     }
 }

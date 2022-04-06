@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 
-public class Customer {
+public class Customer extends User {
     private ArrayList<MenuItem> order;
     private int positionInLine;
     private long paymentInfo;
 
     public Customer() {
+	super("", "");
         order = new ArrayList<MenuItem>();
         positionInLine = -1;
         paymentInfo = -1;
@@ -55,6 +56,13 @@ public class Customer {
             totalPrice = totalPrice + order.get(i).getPrice();
         }
         return totalPrice;
+    }
+    public double getOrderTimeToCook() {
+	double timeToCook = 0;
+	for(MenuItem item : order) {
+	    timeToCook += item.getTimeToCook();
+	}
+	return timeToCook;
     }
     public int getPositionInLine() {
         return positionInLine;
