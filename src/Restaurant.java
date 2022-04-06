@@ -5,15 +5,19 @@ import javafx.collections.ObservableList;
 public class Restaurant extends User {
     private String name;
     private ObservableList<MenuItem> menu;
-    private ArrayList<ArrayList<MenuItem>> orders;
+    private ArrayList<MenuItem[]> orders;
 
     public Restaurant(String name, String username, String password) {
 	super(username, password);
 	this.name = name;
 	this.menu = FXCollections.observableArrayList();
+	this.orders = new ArrayList<MenuItem[]>();
     }
     public String getName() {
 	return name;
+    }
+    public int getNumOfOrders() {
+	return orders.size();
     }
     public void addToMenu(MenuItem item) {
         if (!(menu.contains(item))) menu.add(item);

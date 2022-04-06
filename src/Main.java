@@ -27,9 +27,11 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Main extends Application {
 
+    Restaurant restaurant = new Restaurant("RestaurantName", "username", "password");
     ScrollPane orderScrollPane = new ScrollPane();
     Label totalCost = new Label("$");
     Label timeToCook = new Label("");
+    Label customersAhead = new Label("Customers Ahead: 0");
 
     public static void main(String[] args) {
 	launch(args);
@@ -54,7 +56,6 @@ public class Main extends Application {
 	TextField paymentInfo, nameField, securityField, monthField, yearField;
 	Label creditCardLabel, nameLabel, securityLabel, expirationLabel;
 
-	Restaurant restaurant = new Restaurant("RestaurantName", "username", "password");
 	Customer customer = new Customer();
 	ArrayList<Button> menuButtons = new ArrayList<Button>();
 
@@ -235,7 +236,7 @@ public class Main extends Application {
 	orderButtonRow.getChildren().addAll(toMainFromOrderButton, checkoutButton);
 	VBox orderBottomLayout = new VBox(20);
 	orderBottomLayout.setAlignment(Pos.CENTER);
-	orderBottomLayout.getChildren().addAll(totalCost, timeToCook, orderButtonRow);
+	orderBottomLayout.getChildren().addAll(totalCost, timeToCook, customersAhead, orderButtonRow);
 	orderBottomLayout.setMargin(orderButtonRow, new Insets(0, 0, 20, 0));
 	orderLayout.setBottom(orderBottomLayout);
 	orderLayout.setMargin(orderBottomLayout, new Insets(20));
@@ -377,6 +378,7 @@ public class Main extends Application {
 	}
 	totalCost.setText("Total: $" + String.format("%.2f", customer.getOrderTotal()));
 	timeToCook.setText("Expected Time to Cook: " + String.format("%.0f", customer.getOrderTimeToCook()) + " minutes.");
+	customersAhead.setText("Customers Ahead: " + restaurant.getNumOfOrders());
 	return orderList;
     }
 }
