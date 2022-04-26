@@ -48,8 +48,9 @@ public class Main extends Application {
 	VBox searchLayout = new VBox(40);
 	VBox orderList = new VBox(20);
 	VBox paymentLayout = new VBox(20);
+	GridPane restaurantLayout = new GridPane();
 	Stage window = primaryStage;
-	Scene mainScene, searchScene, orderScene, paymentScene;
+	Scene mainScene, searchScene, orderScene, paymentScene, restaurantScene;
 	Button searchButton, toMainFromSearchButton,
 	    orderButton, toMainFromOrderButton, checkoutButton, payButton;
 	Label title, status, paymentStatus;
@@ -72,11 +73,24 @@ public class Main extends Application {
 	    (new MenuItem("Tacos", 6.99, "tacos.jpg", new String[] {"Hard Corn Shell", "Carne Asada", "Cheese"}, 4.0, "Main"));
 	restaurant.addToMenu
 	    (new MenuItem("Dumplings", 4.39, "dumplings.jpg", new String[] {"Dumpling"}, 3.0, "Appetizer"));
+	restaurant.addToMenu
+	    (new MenuItem("Hamburger", 10.99, "hamburger.jpg", new String[] {"Brioche Bun", "Angus Beef", "American Cheese"}, 10.0, "Main"));
+	restaurant.addToMenu
+	    (new MenuItem("Hotdog", 7.99, "hotdog.jpg", new String[] {"Bun", "Sausage"}, 5.0, "Main"));
+	restaurant.addToMenu
+	    (new MenuItem("Empanada", 8.29, "empanada.jpg", new String[] {"Corn", "Meat"}, 4.0, "Appetizer"));
+	restaurant.addToMenu
+	    (new MenuItem("Blueberry Pie", 5.69, "blueberryPie.jpg", new String[] {"Pie Crust, Blueberries"}, 1.0, "Dessert"));
+	restaurant.addToMenu
+	    (new MenuItem("Tacos", 6.99, "tacos.jpg", new String[] {"Hard Corn Shell", "Carne Asada", "Cheese"}, 4.0, "Main"));
+	restaurant.addToMenu
+	    (new MenuItem("Dumplings", 4.39, "dumplings.jpg", new String[] {"Dumpling"}, 3.0, "Appetizer"));
 
 	mainScene = new Scene(mainLayout, 600, 600);
 	searchScene = new Scene(searchLayout, 600, 600);
 	orderScene = new Scene(orderLayout, 600, 600);
 	paymentScene = new Scene(paymentLayout, 600, 600);
+	restaurantScene = new Scene(restaurantLayout, 600, 600);
 
 	// Main Scene
 
@@ -156,10 +170,14 @@ public class Main extends Application {
 		window.setScene(orderScene);
 		orderScrollPane.setContent(orderList(customer));
 	    });
-	StackPane orderButtonWrapper = new StackPane();
-	orderButtonWrapper.getChildren().add(orderButton);
-	mainLayout.setBottom(orderButtonWrapper);
-	mainLayout.setMargin(orderButtonWrapper, new Insets(40));
+	VBox menuBottomLayout = new VBox(20);
+	Button restaurantButton = new Button("Restaurant Mode");
+	restaurantButton.setOnAction(e -> window.setScene(restaurantScene));
+	menuBottomLayout.getChildren().addAll(orderButton, restaurantButton);
+	StackPane menuBottomWrapper = new StackPane();
+	menuBottomWrapper.getChildren().add(menuBottomLayout);
+	mainLayout.setBottom(menuBottomWrapper);
+	mainLayout.setMargin(menuBottomWrapper, new Insets(40));
 
 	// Search Scene
 
@@ -324,6 +342,17 @@ public class Main extends Application {
 	paymentLayout.getChildren().addAll(paymentStatus, paymentGrid, payButton);
 	paymentGrid.setAlignment(Pos.CENTER);
 	paymentLayout.setAlignment(Pos.CENTER);
+
+	// Restaurant
+	Button toMenuFromRestaurant = new Button("Save and Return");
+	toMenuFromRestaurant.setOnAction(e -> window.setScene(mainScene));
+	GridPane.setConstaints();
+
+	// User Login Scene
+
+
+	// Serialization
+
 
 	// Finishing Window Settings
 	window.setScene(mainScene);
