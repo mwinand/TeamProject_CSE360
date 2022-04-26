@@ -48,9 +48,11 @@ public class Main extends Application {
 	VBox searchLayout = new VBox(40);
 	VBox orderList = new VBox(20);
 	VBox paymentLayout = new VBox(20);
-	GridPane restaurantLayout = new GridPane();
+	VBox restaurantLayout = new VBox(20);
+	VBox newItemLayout = new VBox(20);
 	Stage window = primaryStage;
-	Scene mainScene, searchScene, orderScene, paymentScene, restaurantScene;
+	Scene mainScene, searchScene, orderScene, paymentScene, restaurantScene,
+			newItemScene;
 	Button searchButton, toMainFromSearchButton,
 	    orderButton, toMainFromOrderButton, checkoutButton, payButton;
 	Label title, status, paymentStatus;
@@ -91,6 +93,7 @@ public class Main extends Application {
 	orderScene = new Scene(orderLayout, 600, 600);
 	paymentScene = new Scene(paymentLayout, 600, 600);
 	restaurantScene = new Scene(restaurantLayout, 600, 600);
+	newItemScene = new Scene(newItemLayout, 600, 600);
 
 	// Main Scene
 
@@ -174,10 +177,9 @@ public class Main extends Application {
 	Button restaurantButton = new Button("Restaurant Mode");
 	restaurantButton.setOnAction(e -> window.setScene(restaurantScene));
 	menuBottomLayout.getChildren().addAll(orderButton, restaurantButton);
-	StackPane menuBottomWrapper = new StackPane();
-	menuBottomWrapper.getChildren().add(menuBottomLayout);
-	mainLayout.setBottom(menuBottomWrapper);
-	mainLayout.setMargin(menuBottomWrapper, new Insets(40));
+	menuBottomLayout.setAlignment(Pos.CENTER);
+	mainLayout.setBottom(menuBottomLayout);
+	mainLayout.setMargin(menuBottomLayout, new Insets(40));
 
 	// Search Scene
 
@@ -343,12 +345,112 @@ public class Main extends Application {
 	paymentGrid.setAlignment(Pos.CENTER);
 	paymentLayout.setAlignment(Pos.CENTER);
 
-	// Restaurant
+	// Restaurant Settings Scene
+	Label resStatus = new Label("");
+	Label resNameLabel = new Label("Restaurant Name");
+	TextField resNameField = new TextField();
+	Label resUsernameLabel = new Label("Restaurant Username");
+	TextField resUsernameField = new TextField();
+	Label resPasswordLabel = new Label("Restaurant Password");
+	TextField resPasswordField = new TextField();
+
+	Button newItemButton = new Button("New Menu Item");
+	newItemButton.setOnAction(e -> window.setScene(newItemScene));
 	Button toMenuFromRestaurant = new Button("Save and Return");
 	toMenuFromRestaurant.setOnAction(e -> window.setScene(mainScene));
-	GridPane.setConstaints();
+
+	GridPane restaurantGrid = new GridPane();
+	GridPane.setConstraints(resNameLabel, 0, 0);
+	GridPane.setConstraints(resNameField, 1, 0);
+	GridPane.setConstraints(resUsernameLabel, 0, 1);
+	GridPane.setConstraints(resUsernameField, 1, 1);
+	GridPane.setConstraints(resPasswordLabel, 0, 2);
+	GridPane.setConstraints(resPasswordField, 1, 2);
+	restaurantGrid.getChildren().addAll(resNameLabel, resNameField, resUsernameLabel,
+		       resUsernameField, resPasswordLabel, resPasswordField);
+	restaurantGrid.setAlignment(Pos.CENTER);
+
+	restaurantLayout.getChildren().addAll(resStatus, restaurantGrid, newItemButton, toMenuFromRestaurant);
+	restaurantLayout.setAlignment(Pos.CENTER);
+
+	// Add Menu Item Scene
+	Label newItemTitle = new Label("New Menu Item");
+
+	GridPane newItemGrid = new GridPane();
+	Label newName = new Label("Name");
+	TextField newNameField = new TextField();
+	Label newPrice = new Label("Price");
+	TextField newPriceField = new TextField();
+	Label newPath = new Label("Image Path");
+	TextField newPathField = new TextField();
+	Label newIngredientList = new Label("Ingredient List (Separated by commas)");
+	TextField newIngredientListField = new TextField();
+	Label newTimeToCook = new Label("Time to Cook");
+	TextField newTimeToCookField = new TextField();
+	Label newCategory = new Label("Category (Appetizer, Main, Dessert)");
+	TextField newCategoryField = new TextField();
+	newPriceField.textProperty().addListener((ob, ov, nv) -> {
+		if(!nv.matches("\\d*")) {
+		    paymentInfo.setText(nv.replaceAll("[^\\d]", ""));
+		}
+	    });
+	newTimeToCookField.textProperty().addListener((ob, ov, nv) -> {
+		if(!nv.matches("\\d*")) {
+		    paymentInfo.setText(nv.replaceAll("[^\\d]", ""));
+		}
+	    });
+	GridPane.setConstraints(newName, 0, 0);
+	GridPane.setConstraints(newNameField, 1, 0);
+	GridPane.setConstraints(newPrice, 0, 1);
+	GridPane.setConstraints(newPriceField, 1, 1);
+	GridPane.setConstraints(newPath, 0, 2);
+	GridPane.setConstraints(newPathField, 1, 2);
+	GridPane.setConstraints(newIngredientList, 0, 3);
+	GridPane.setConstraints(newIngredientListField, 1, 3);
+	GridPane.setConstraints(newTimeToCook, 0, 4);
+	GridPane.setConstraints(newTimeToCookField, 1, 4);
+	GridPane.setConstraints(newCategory, 0, 5);
+	GridPane.setConstraints(newCategoryField, 1, 5);
+	newItemGrid.getChildren().addAll(newName, newNameField, newPrice, newPriceField, newPath, newPathField, newIngredientList, newIngredientListField, newTimeToCook, newTimeToCookField, newCategory, newCategoryField);
+	newItemGrid.setAlignment(Pos.CENTER);
+
+	HBox newItemButtonLayout = new HBox(40);
+	Button newItemCancel = new Button("Cancel");
+	newItemCancel.setOnAction(e -> window.setScene(restaurantScene));
+	Button newItemAdd = new Button("Add");
+	newItemAdd.setOnAction(e -> {
+		if(newNameField.getText().length() != 0 &&
+		   newPriceField.getText().length() != 0 &&
+		   newPathField.getText().length() != 0 &&
+		   newIngredientListField.getText().length() != 0 &&
+		   newTimeToCookField.getText().length() != 0 &&
+		   newCategoryField.getText().length() != 0) {
+		    MenuItem newItem = new MenuItem
+			(newNameField.getText(),
+			 Double.parseDouble(newPriceField.getText()),
+			 newPathField.getText(),
+			 newIngredientListField.getText().split(","),
+			 Double.parseDouble(newTimeToCookField.getText()),
+			 newCategoryField.getText());
+		    restaurant.addToMenu(newItem);
+		    newNameField.clear();
+		    newPriceField.clear();
+		    newPathField.clear();
+		    newIngredientListField.clear();
+		    newTimeToCookField.clear();
+		    newCategoryField.clear();
+		    resStatus.setText("Added new item to menu successfully.");
+		    window.setScene(restaurantScene);
+		}
+	    });
+	newItemButtonLayout.getChildren().addAll(newItemCancel, newItemAdd);
+	newItemButtonLayout.setAlignment(Pos.CENTER);
+
+	newItemLayout.getChildren().addAll(newItemTitle, newItemGrid, newItemButtonLayout);
+	newItemLayout.setAlignment(Pos.CENTER);
 
 	// User Login Scene
+
 
 
 	// Serialization
