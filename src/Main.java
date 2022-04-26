@@ -75,18 +75,6 @@ public class Main extends Application {
 	    (new MenuItem("Tacos", 6.99, "tacos.jpg", new String[] {"Hard Corn Shell", "Carne Asada", "Cheese"}, 4.0, "Main"));
 	restaurant.addToMenu
 	    (new MenuItem("Dumplings", 4.39, "dumplings.jpg", new String[] {"Dumpling"}, 3.0, "Appetizer"));
-	restaurant.addToMenu
-	    (new MenuItem("Hamburger", 10.99, "hamburger.jpg", new String[] {"Brioche Bun", "Angus Beef", "American Cheese"}, 10.0, "Main"));
-	restaurant.addToMenu
-	    (new MenuItem("Hotdog", 7.99, "hotdog.jpg", new String[] {"Bun", "Sausage"}, 5.0, "Main"));
-	restaurant.addToMenu
-	    (new MenuItem("Empanada", 8.29, "empanada.jpg", new String[] {"Corn", "Meat"}, 4.0, "Appetizer"));
-	restaurant.addToMenu
-	    (new MenuItem("Blueberry Pie", 5.69, "blueberryPie.jpg", new String[] {"Pie Crust, Blueberries"}, 1.0, "Dessert"));
-	restaurant.addToMenu
-	    (new MenuItem("Tacos", 6.99, "tacos.jpg", new String[] {"Hard Corn Shell", "Carne Asada", "Cheese"}, 4.0, "Main"));
-	restaurant.addToMenu
-	    (new MenuItem("Dumplings", 4.39, "dumplings.jpg", new String[] {"Dumpling"}, 3.0, "Appetizer"));
 
 	mainScene = new Scene(mainLayout, 600, 600);
 	searchScene = new Scene(searchLayout, 600, 600);
