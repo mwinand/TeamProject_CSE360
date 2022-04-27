@@ -11,6 +11,14 @@ public class Customer extends User {
         positionInLine = -1;
         paymentInfo = -1;
     }
+
+    public Customer(String username, String password, ArrayList<MenuItem> order) {
+	super(username, password);
+        this.order = order;
+        positionInLine = -1;
+        paymentInfo = -1;
+    }
+
     public void addToOrder(MenuItem item) {
         order.add(item);
     }

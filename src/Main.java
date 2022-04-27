@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.application.Application;
@@ -24,6 +25,10 @@ import javafx.geometry.Insets;
 import javafx.util.Callback;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.property.SimpleStringProperty;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
 
 public class Main extends Application {
 
@@ -32,6 +37,7 @@ public class Main extends Application {
     Label totalCost = new Label("$");
     Label timeToCook = new Label("");
     Label customersAhead = new Label("Customers Ahead: 0");
+    Customer customer = new Customer();
 
     public static void main(String[] args) {
 	launch(args);
@@ -50,17 +56,37 @@ public class Main extends Application {
 	VBox paymentLayout = new VBox(20);
 	VBox restaurantLayout = new VBox(20);
 	VBox newItemLayout = new VBox(20);
+	VBox loginLayout = new VBox(20);
 	Stage window = primaryStage;
 	Scene mainScene, searchScene, orderScene, paymentScene, restaurantScene,
-			newItemScene;
-	Button searchButton, toMainFromSearchButton,
-	    orderButton, toMainFromOrderButton, checkoutButton, payButton;
+			newItemScene, loginScene;
+	Button searchButton, toMainFromSearchButton, orderButton, toMainFromOrderButton,
+	    checkoutButton, payButton, loginButton;
 	Label title, status, paymentStatus;
 	TextField paymentInfo, nameField, securityField, monthField, yearField;
 	Label creditCardLabel, nameLabel, securityLabel, expirationLabel;
 
-	Customer customer = new Customer();
+	ArrayList<Customer> savedUsers = new ArrayList<Customer>();
 	ArrayList<Button> menuButtons = new ArrayList<Button>();
+
+	// Get information from saved file
+	String buffer;
+	try {
+	    BufferedReader bf = new BufferedReader(new FileReader("users.csv"));
+	    while((buffer = bf.readLine()) != null) {
+		String[] info = buffer.split(",");
+		ArrayList<MenuItem> order = new ArrayList<MenuItem>();
+		for (int i = 2; i < info.length; i++) {
+		    String[] itemInfo = info[i].split(":");
+		    order.add(new MenuItem(itemInfo[0], Double.parseDouble(itemInfo[1]), itemInfo[2], Arrays.copyOfRange(itemInfo, 5, itemInfo.length), Double.parseDouble(itemInfo[3]), itemInfo[4]));
+		}
+		savedUsers.add(new Customer(info[0], info[1], order));
+	    }
+	    bf.close();
+	}
+	catch (IOException e) {
+	    e.printStackTrace();
+	}
 
 	// food, price, path, ingredients, timecook, category
 	restaurant.addToMenu
@@ -70,7 +96,7 @@ public class Main extends Application {
 	restaurant.addToMenu
 	    (new MenuItem("Empanada", 8.29, "empanada.jpg", new String[] {"Corn", "Meat"}, 4.0, "Appetizer"));
 	restaurant.addToMenu
-	    (new MenuItem("Blueberry Pie", 5.69, "blueberryPie.jpg", new String[] {"Pie Crust, Blueberries"}, 1.0, "Dessert"));
+	    (new MenuItem("Blueberry Pie", 5.69, "blueberryPie.jpg", new String[] {"Pie Crust", "Blueberries"}, 1.0, "Dessert"));
 	restaurant.addToMenu
 	    (new MenuItem("Tacos", 6.99, "tacos.jpg", new String[] {"Hard Corn Shell", "Carne Asada", "Cheese"}, 4.0, "Main"));
 	restaurant.addToMenu
@@ -82,6 +108,7 @@ public class Main extends Application {
 	paymentScene = new Scene(paymentLayout, 600, 600);
 	restaurantScene = new Scene(restaurantLayout, 600, 600);
 	newItemScene = new Scene(newItemLayout, 600, 600);
+	loginScene = new Scene(loginLayout, 600, 600);
 
 	// Main Scene
 
@@ -164,7 +191,9 @@ public class Main extends Application {
 	VBox menuBottomLayout = new VBox(20);
 	Button restaurantButton = new Button("Restaurant Mode");
 	restaurantButton.setOnAction(e -> window.setScene(restaurantScene));
-	menuBottomLayout.getChildren().addAll(orderButton, restaurantButton);
+	loginButton = new Button("Log in");
+	loginButton.setOnAction(e -> window.setScene(loginScene));
+	menuBottomLayout.getChildren().addAll(orderButton, loginButton, restaurantButton);
 	menuBottomLayout.setAlignment(Pos.CENTER);
 	mainLayout.setBottom(menuBottomLayout);
 	mainLayout.setMargin(menuBottomLayout, new Insets(40));
@@ -438,11 +467,107 @@ public class Main extends Application {
 	newItemLayout.setAlignment(Pos.CENTER);
 
 	// User Login Scene
+	Label loginStatus = new Label("");
+	GridPane loginGrid = new GridPane();
+	Label loginUsername = new Label("Username: ");
+	TextField loginUsernameField = new TextField();
+	Label loginPassword = new Label("Password: ");
+	TextField loginPasswordField = new TextField();
+	GridPane.setConstraints(loginUsername, 0, 0);
+	GridPane.setConstraints(loginUsernameField, 1, 0);
+	GridPane.setConstraints(loginPassword, 0, 1);
+	GridPane.setConstraints(loginPasswordField, 1, 1);
+	loginGrid.getChildren().addAll(loginUsername, loginUsernameField, loginPassword,
+			loginPasswordField);
+	loginGrid.setAlignment(Pos.CENTER);
+	Button tryLoginButton = new Button("Log in");
+	tryLoginButton.setOnAction(e -> {
+		int pos = -1;
+		for (int i = 0; i < savedUsers.size(); i++) {
+		    if (savedUsers.get(i).getUsername().equals(loginUsernameField.getText())) {
+			pos = i;
+			break;
+		    }
+		}
+		if(pos != -1) {
+		    customer = savedUsers.get(pos);
+		    savedUsers.remove(pos);
+		    loginUsernameField.clear();
+		    loginPasswordField.clear();
+		    window.setScene(mainScene);
+		}
+		else {
+		    loginStatus.setText("User does not exist");
+		}
 
+	    });
+	Button createUserButton = new Button("Create user");
+	createUserButton.setOnAction(e-> {
+		if(loginUsernameField.getText().length() != 0 && loginPasswordField.getText().length() != 0) {
+		    boolean exists = false;
+		    for (Customer c : savedUsers) {
+			if (c.getUsername().equals(loginUsernameField.getText())) {
+			    exists = true;
+			    break;
+			}
+		    }
+		    if(exists) {
+			loginStatus.setText("User already exists");
+		    }
+		    else {
+			customer.setUsername(loginUsernameField.getText());
+			customer.setPassword(loginPasswordField.getText());
+			loginUsernameField.clear();
+			loginPasswordField.clear();
+			window.setScene(mainScene);
+		    }
+		}
+	    });
+	Button toMenuFromLogin = new Button("Return to Menu");
+	toMenuFromLogin.setOnAction(e -> window.setScene(mainScene));
+	loginLayout.getChildren().addAll(loginStatus, loginGrid, tryLoginButton, createUserButton, toMenuFromLogin);
+	loginLayout.setAlignment(Pos.CENTER);
 
-
-	// Serialization
-
+	// On Close
+	// save users again to file on close, save current user as well
+	window.setOnCloseRequest(e -> {
+		try {
+		    FileWriter fileWriter = new FileWriter("users.csv");
+		    String outData = "";
+		    if(!customer.getUsername().equals("")){
+			String line = customer.getUsername() + "," + customer.getPassword() + ",";
+			for(MenuItem m : customer.getOrderItems()) {
+			    String tmp = m.getFood() + ":" + m.getPrice() + ":" + m.getImagePath() + ":" + m.getTimeToCook() + ":" + m.getCategory() + ":";
+			    for(String ing : m.getIngredientList()) {
+				tmp += ing + ":";
+			    }
+			    tmp = tmp.substring(0, tmp.length() - 1);
+			    line += tmp + ",";
+			}
+			line = line.substring(0, line.length() - 1);
+			outData += line + "\n";
+		    }
+		    for(Customer c : savedUsers) {
+			String line = c.getUsername() + "," + c.getPassword() + ",";
+			for(MenuItem m : c.getOrderItems()) {
+			    String tmp = m.getFood() + ":" + m.getPrice() + ":" + m.getImagePath() + ":" + m.getTimeToCook() + ":" + m.getCategory() + ":";
+			    for(String ing : m.getIngredientList()) {
+				tmp += ing + ":";
+			    }
+			    tmp = tmp.substring(0, tmp.length() - 1);
+			    line += tmp + ",";
+			}
+			line = line.substring(0, line.length() - 1);
+			outData += line + "\n";
+		    }
+		    outData = outData.substring(0, outData.length() - 1);
+		    fileWriter.write(outData);
+		    fileWriter.close();
+		}
+		catch (IOException ex) {
+		    ex.printStackTrace();
+		}
+	    });
 
 	// Finishing Window Settings
 	window.setScene(mainScene);

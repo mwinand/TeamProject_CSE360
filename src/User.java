@@ -15,6 +15,9 @@ public class User {
     public String getUsername() {
         return username;
     }
+    public String getPassword() {
+	return password;
+    }
     public Boolean checkLoginCredentials(String usernameEntry, String passwordEntry) {
         Boolean matchingUsername = usernameEntry.equalsIgnoreCase(username);
         Boolean correctPassword = passwordEntry.equals(password);
